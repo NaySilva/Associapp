@@ -8,10 +8,10 @@ import br.edu.ifpi.associapp.enuns.SituacaoDaCasaEnum;
 
 public class Familia {
 	private Endereco endereco;
-	private int codigo;
+	private int id;
 	private int idComunidade;
-	private List<Pessoa> membros = new ArrayList<>();
-	private Pessoa chefe;
+	private List<Membro> membros = new ArrayList<>();
+	private Membro chefe;
 	private String descricao;
 	private SituacaoDaCasaEnum situacaoDaCasa;
 	private List<Recursos> recursos = new ArrayList<>();
@@ -32,17 +32,22 @@ public class Familia {
 		this.chefe = this.membros.get(0);
 	}
 	
-	public void addMembro(Pessoa membro){
+	public void addMembro(Membro membro){
 		this.membros.add(membro);
 	}
 	
 	public void mostraMembros(){
-		for (Pessoa membro : membros) {
+		for (Membro membro : membros) {
 			System.out.println(membro);
 		}
 	}
+	
+	public String toString() {
+		String str = "Id: " + this.id + "\nENDERECO\nRua: " + this.endereco.getRua() + "\nNumero: " +this.endereco.getNumero() + "\nCep: " + this.endereco.getCep() + "\n\n";
+		return str;
+	}
 
-	public List<Pessoa> getMembros() {
+	public List<Membro> getMembros() {
 		return membros;
 	}
 
@@ -51,8 +56,8 @@ public class Familia {
 		return this.endereco.toString();
 	}
 
-	public void setCodigo(int id) {
-		this.codigo = id;
+	public void setId(int id) {
+		this.id = id;
 		
 	}
 
@@ -63,7 +68,7 @@ public class Familia {
 
 	public int getCodigo() {
 		// TODO Auto-generated method stub
-		return this.codigo;
+		return this.id;
 	}
 
 	public int getIdComunidade() {
@@ -75,19 +80,4 @@ public class Familia {
 	}
 
 	
-
-//	public void setEndereco(String blob) {
-//		this.endereco.toString() = blob;
-//		
-//	}
-
-	
-	
-	
-//	private String geraCodigo(String nome){
-//		String inicio = nome.substring(0, 3).toUpperCase();
-//		int fim = (int)(Math.random()*1000);
-//		String cod = inicio + fim;
-//		return cod;
-//	}
 }

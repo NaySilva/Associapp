@@ -2,7 +2,7 @@ package br.edu.ifpi.associapp.aplicacao;
 
 import br.edu.ifpi.associapp.modelo.Comunidade;
 import br.edu.ifpi.associapp.modelo.Data;
-import br.edu.ifpi.associapp.modelo.Pessoa;
+import br.edu.ifpi.associapp.modelo.Membro;
 import br.edu.ifpi.associapp.dao.ComunidadeDAO;
 import br.edu.ifpi.associapp.dao.ComunidadeJDBCDAO;
 import br.edu.ifpi.associapp.enuns.*;

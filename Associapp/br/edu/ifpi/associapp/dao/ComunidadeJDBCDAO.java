@@ -7,11 +7,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import br.edu.ifpi.associapp.enuns.TipoDeComunidadeEnum;
 import br.edu.ifpi.associapp.modelo.Comunidade;
 import br.edu.ifpi.associapp.modelo.Endereco;
 import br.edu.ifpi.associapp.modelo.Familia;
-import br.edu.ifpi.associapp.modelo.Pessoa;
 
 public class ComunidadeJDBCDAO implements ComunidadeDAO {
 
@@ -34,7 +35,7 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Erro ao inserir Comunidade");
+			JOptionPane.showMessageDialog(null, "Erro ao inserir Comunidade");
 		} finally {
 			try {
 				conn.close();
@@ -57,13 +58,12 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 			sql = "SELECT id FROM familia ORDER BY id DESC limit 1";
 			ResultSet rs = s.executeQuery(sql);
 			int id = rs.getInt("id");
-			f.setCodigo(id);
-			System.out.println(f.getCodigo());
+			f.setId(id);
 			c.addFamilias(f);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Erro ao inserir Familia");
+			JOptionPane.showMessageDialog(null, "Erro ao inserir Familia");
 		} finally {
 			try {
 				conn.close();
@@ -90,7 +90,7 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Erro ao inserir Endereco");
+			JOptionPane.showMessageDialog(null, "Erro ao inserir Endereco");
 		} finally {
 			try {
 				conn.close();
@@ -102,33 +102,7 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 		return id;
 	}
 	
-	public Pessoa inserirPessoa(Pessoa p, Familia f) {
-		conn = ConnectionFactory.getConnection();
-		
-		try {
-			Statement s = conn.createStatement();
-			String sql = "INSERT INTO pessoa(nome, sexo, id_familia) values('"+ p.getNome()+"', '"
-					+p.getSexo()+"', "+ f.getCodigo()+ ")";
-			s.executeUpdate(sql);
-			sql = "SELECT id FROM pessoa ORDER BY id DESC limit 1";
-			ResultSet rs = s.executeQuery(sql);
-			int id = rs.getInt("id");
-			p.setCodigo(id);
-			f.addMembro(p);
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Erro ao inserir Membro da Familia");
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return p;
-	}
+
 
 	@Override
 	public List<Comunidade> lista() {
@@ -159,32 +133,6 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 		return lista;
 	}
 	
-	public List<Pessoa> listaDePessoas() {
-		List<Pessoa> lista = new ArrayList<>();
-		conn = ConnectionFactory.getConnection();
-		String sql = "SELECT * FROM pessoa";
-		try {
-			Statement stmt = conn.createStatement();
-			ResultSet resultado = stmt.executeQuery(sql);
-			while (resultado.next()) {
-				Pessoa p = new Pessoa();
-				p.setCodigo(resultado.getInt("id"));
-				p.setNome(resultado.getString("nome"));
-				p.setSexo(resultado.getString("sexo").charAt(0));
-				lista.add(p);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return lista;
-	}
 	
 	public List<Familia> listaFamilia() {
 		List<Familia> lista = new ArrayList<>();
@@ -194,17 +142,17 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 			Statement stmt = conn.createStatement();
 			ResultSet resultado = stmt.executeQuery(sql);
 			while (resultado.next()) {
-				String sql2 = "SELECT * FROM endereco WHERE id = "+
-			resultado.getInt("id_endereco")+"";
-				ResultSet resultado2 = stmt.executeQuery(sql2);
 				Familia f = new Familia();
 				Endereco end = new Endereco();
+				String sql2 = "SELECT * FROM endereco WHERE id = "+
+			resultado.getInt("id_endereco");
+				Statement stmt2 = conn.createStatement();
+				ResultSet resultado2 = stmt2.executeQuery(sql2);
 				end.setRua(resultado2.getString("rua"));
 				end.setNumero(resultado2.getInt("numero"));
 				end.setCep(resultado2.getString("cep"));
-				f.setCodigo(resultado.getInt("id"));
+				f.setId(resultado.getInt("id"));
 				f.setEndereco(end);
-				f.setIdComunidade(resultado.getInt("id_comunidade"));
 				lista.add(f);
 			}
 		} catch (Exception e) {
@@ -236,12 +184,14 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 				c.setTipo(TipoDeComunidadeEnum.valueOf(resultado.getString("tipo")));
 			}
 			return c;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {
+				System.out.println("oo");
 				e.printStackTrace();
 			}
 		}
@@ -257,7 +207,7 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 			ResultSet resultado = stmt.executeQuery(sql);
 			while (resultado.next()) {
 				f = new Familia();
-				f.setCodigo(resultado.getInt("id"));
+				f.setId(resultado.getInt("id"));
 			}
 			return f;
 		} catch (Exception e) {
@@ -272,29 +222,7 @@ public class ComunidadeJDBCDAO implements ComunidadeDAO {
 		return null;
 	}
 	
-	public Pessoa obterPessoa(int id) {
-		conn = ConnectionFactory.getConnection();
-		String sql = "SELECT * FROM familia WHERE id = " + id;
-		Pessoa p = null;
-		try {
-			Statement stmt = conn.createStatement();
-			ResultSet resultado = stmt.executeQuery(sql);
-			while (resultado.next()) {
-				p = new Pessoa();
-				p.setCodigo(resultado.getInt("id"));
-			}
-			return p;
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
+	
 
 	@Override
 	public void remover(Comunidade c) {

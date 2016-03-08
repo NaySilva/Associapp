@@ -2,16 +2,16 @@ package br.edu.ifpi.associapp.modelo;
 
 public class Parentesco {
 	
-	private Pessoa parente;
+	private Membro parente;
 	private TipoParentesco tipo;
 	
 	public Parentesco() {
 		// TODO Auto-generated constructor stub
 	}
-	public Pessoa getParente() {
+	public Membro getParente() {
 		return parente;
 	}
-	public void setParente(Pessoa parente) {
+	public void setParente(Membro parente) {
 		this.parente = parente;
 	}
 	public TipoParentesco getTipo() {
